@@ -1,0 +1,36 @@
+html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  font-family: Arial;
+}
+
+
+pre, span {
+  font-family: "Courier New";
+  font-size: 11px;
+  margin: 0;
+}
+
+#console {
+  position: fixed; 
+  top: 10px;
+  right: 10px;
+  width: 40vw;
+  height: 90vh;
+  background-color: black;
+  color: #f0f0f0;
+  border-radius: 5px;
+  padding: 5px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+}

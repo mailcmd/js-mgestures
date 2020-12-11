@@ -1,0 +1,55 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>JS-MGestures Demo</title>
+  <meta name="description" content="JS-MGestures Demo">
+  <meta name="author" content="mailcmd">
+
+  <link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+  
+  Debug Level
+  <select onchange="___gestures.conf.debug=parseInt(this.value);">
+    <option value="0" selected>Only HITs</option>
+    <option value="1">Every pattern evaluation</option>
+    <option value="2">Previous and more info</option>
+    <option value="3">... more info yet!</option>
+    <option value="4">Give me all, baby!</option>
+  </select>
+  <div id="console"></div>
+
+  <script src="../mgestures.js"></script>
+  <script src="samples.js"></script>
+
+  <script>
+  
+  _console_log = console.log;
+  
+  console.log = function() {    
+    var args = [];    
+    var pre = document.createElement('span');
+    pre.innerHTML = '- ';
+    for (i in arguments) {
+      args.push('arguments['+i+']');
+      pre.innerHTML += arguments[i] + ' ';
+    }    
+    pre.innerHTML += '<br>-----<br>';
+    document.getElementById('console').appendChild(pre);
+    
+    eval('_console_log('+args.join(',')+')');
+    document.querySelector('#console').scrollTop = document.querySelector('#console').scrollHeight;
+  }
+  
+  var ___gestures = new Gestures();
+  ___gestures.install();  // enable gestures
+
+  </script>
+  
+</body>
+</html>
