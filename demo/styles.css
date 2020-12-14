@@ -1,6 +1,6 @@
 html {
   margin: 0;
-  padding: 0;
+  padding: 12px;
   overflow: hidden;
 }
 
@@ -33,4 +33,18 @@ pre, span {
   overflow-y: auto;
   scrollbar-width: thin;
   scroll-behavior: smooth;
+}
+
+#console .clear {
+  position: sticky;
+  top: -3px;
+  float: right;
+  color: white;
+  cursor: pointer;
+  font-size: 22px;
+}
+
+#console .clear:hover {
+  transform: scale(1.1);
+  text-shadow: 0 0 5px white;
 }
