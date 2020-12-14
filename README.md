@@ -26,7 +26,7 @@ In cases of circular gestures like circles or squares, you have another options 
 ## Usage:
 
 ```javascript
-var ___gestures = new Gestures(); // or new Gestures({ ... })
+var ___gestures = new Gestures({ ... })
 ___gestures.install();  // enable gestures
 ...
 ...
