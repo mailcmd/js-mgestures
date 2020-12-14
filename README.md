@@ -4,6 +4,7 @@ Simple pure javascritp mouse gestures controller. I took some ideas from https:/
 ## How it works?
 
 This is the directions guide: 
+<pre>
                                                  N
   0: 'E',                               NW       2       NE                   
   1: 'NE',                                 3     |     1                       
@@ -14,6 +15,7 @@ This is the directions guide:
   6: 'S',                               SW       6       SE                  
   7: 'SE',                                       S                           
   8: 'E'    // 8 is equal to 0                                                              
+</pre>
 
 When you make a gesture, it is translated to a numbers string. For example, one line down <span>&darr;</span> would be translated as a sequence of numbers 6 (Ex: 666666666). If you do a small line, you will have something like 666 and if you do a large one you will have something like 666666666. So, the gesture pattern detector can be sensitive not just to a form but to a size. If you want avoid this, i.e. a line down short and one large are matched with the same pattern, then you need set "normalize" option to true (this is the default setting for this option).  Setting normalize to true 666 and 66666666666 will be normalized like 6666. 
 
