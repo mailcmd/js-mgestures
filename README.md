@@ -59,8 +59,15 @@ ___gestures.uninstall(); // disable gestures
   normalize: true, // if false disable normalization of gestures and difference between 
                    // patterns of the same shape but different size.
   detectCircular: false, // if true detect circular shapes no matter where the gesture begins
-  debug: 0 // 0-4, 0 log just HITs, 4 just for developers and dangerous
+  debug: 0 // 0-4, 0 log just HITs, 4 just for developers and can hung up the browser
 }
 ```
+## Playing with the demo
 
+Just do this:
 
+```bash
+# git clone https://github.com/mailcmd/js-mgestures.git
+# cd js-mgestures/demo
+# <your_favorite_browser> index.html
+```
