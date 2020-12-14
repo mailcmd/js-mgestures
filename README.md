@@ -1,6 +1,8 @@
 # js-mgestures
 Simple pure javascritp mouse gestures controller. I took some ideas from https://github.com/adkelley/elm-mouse-gesture and levenshtein algorithm. I also took some small pieces of code from the internet to be able to draw the mouse tail. 
 
+The gesture will start when you press the right button of your mouse and will end when you stop pressing it.
+
 ## How it works?
 
 This is the directions guide: 
@@ -34,9 +36,31 @@ ___gestures.uninstall(); // disable gestures
 
 ```javascript 
 {
-  normalize: true, // if false disable normalization of gestures and difference between patterns of the same shape but different size.
+  patterns: [ 
+    { 
+      // Example:
+      name: "Line down", 
+      patterns: [ "6666" ], // can be more than one
+      action: function(ev) {
+        // ev: "mouseup" event        
+        // local vars inside 
+        //    ix, iy: coordinates where the gesture begin
+        //    mx, my: coordinates where the gesture end
+
+        var diff = my - iy;
+        console.log('You made a gesture over these objects: ', els);
+        
+        var els = document.elementsFromPoint(e.pageX, e.pageY);
+        console.log('You moved ', diff, 'px');      
+    },
+    { ... },
+    { ... }
+  ],
+  normalize: true, // if false disable normalization of gestures and difference between 
+                   // patterns of the same shape but different size.
   detectCircular: false, // if true detect circular shapes no matter where the gesture begins
   debug: 0 // 0-4, 0 log just HITs, 4 just for developers and dangerous
 }
 ```
+
 
