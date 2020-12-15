@@ -1,17 +1,26 @@
 # js-mgestures
 Simple pure javascritp mouse gestures controller. I took some ideas from https://github.com/adkelley/elm-mouse-gesture and levenshtein algorithm. I also took some small pieces of code from the internet to be able to draw the mouse tail. 
 
-The gesture will start when you press the right button of your mouse and will end when you stop pressing it.
-
 ## How it works?
 
-This is the directions guide: 
+The system works in a fairly simple way. Each gesture made is checked against a series of patterns; when there is a match (which does not have to be exact) the action associated with that pattern will be executed. To perform a gesture one of the mouse buttons should be held down for the duration (the default is the right mouse button). 
+
+A mouse gesture has 3 essential properties: shape, size and speed. The shape is the basic gesture. A downward line or a circle are examples of shapes. At the same time each of these shapes can have a size (i.e. a downward line can be short or long) as well as be drawn at a certain speed. 
+
+The pattern detector, by default, will ignore the size and speed of the shape, i.e. a downward line will be considered a match whether it is short or long and whether it is done in 300ms or 1000ms. To make the pattern detector sensitive to size, the "normalizeSize" option must be set to false. Similarly, to make the pattern detector speed sensitive you should set "normalizeSpeed" to false. By default these two options are set to true. 
+
+## Patterns
+
+A pattern is defined as a sequence of numbers from 0 to 8 (0 and 8 are equivalent). For example "5555" or "66660000" would be valid patterns, the first one a diagonal line SW and the second one an "L", that is a line to the south and then to the east. 
+
+This is the guide that defines the number corresponding to each address:
+
 <pre>
                                                  N
   0: 'E',                               NW       2       NE                   
   1: 'NE',                                 3     |     1                       
   2: 'N',                                        |                         
-  3: 'NW',                            W  4 ------+------ 0 E                    
+  3: 'NW',                            W  4 ------+------ 0  E                    
   4: 'W',                                        |                         
   5: 'SW',                                 5     |     7                    
   6: 'S',                               SW       6       SE                  
@@ -19,7 +28,8 @@ This is the directions guide:
   8: 'E'    // 8 is equal to 0                                                              
 </pre>
 
-When you make a gesture, it is translated to a string of numbers. For example, one line down <strong>&darr;</strong> would be translated as a sequence of numbers 6 (Ex: 666666666). If you do a small line, you will have something like 666 and if you do a large one you will have something like 666666666. So, the gesture pattern detector can be sensitive not just to a shape but to a size. If you want avoid this, i.e. a line down short and one large are matched with the same pattern, then you need set "normalize" option to true (this is the default setting for this option).  Setting "normalize" to true, 666 and 66666666666 will be normalized like 6666. 
+
+......................
 
 In cases of circular gestures like circles or squares, you have another options that allow you match a circle that begin on North and other that begin on South like the same pattern. This options is "detectCircular". If you set it true, then any circle will be the same pattern, if it is false, then the circle will must match form and initial point. "detecCircular" default settings is false. 
 
