@@ -5,9 +5,9 @@ Simple pure javascritp mouse gestures controller. I took some ideas from https:/
 
 The system works in a fairly simple way. Each gesture made is checked against a series of patterns; when there is a match (which does not have to be exact) the action associated with that pattern will be executed. To perform a gesture one of the mouse buttons should be held down for the duration (the default is the right mouse button). 
 
-A mouse gesture has 3 essential properties: shape, size and speed. The shape is the basic gesture. A downward line or a circle are examples of shapes. At the same time each of these shapes can have a size (i.e. a downward line can be short or long) as well as be drawn at a certain speed. 
+A mouse gesture has 3 essential properties: shape, size and duration. The shape is the basic gesture. A downward line or a circle are examples of shapes. At the same time each of these shapes can have a size (i.e. a downward line can be short or long) as well as be drawn in a certain period of time. 
 
-The pattern detector, by default, will ignore the size and speed of the shape, i.e. a downward line will be considered a match whether it is short or long and whether it is done in 300ms or 1000ms. To make the pattern detector sensitive to size, the "normalizeSize" option must be set to false. Similarly, to make the pattern detector speed sensitive you should set "normalizeSpeed" to false. By default these two options are set to true. 
+The pattern detector, by default, will ignore the size and the time of the shape, i.e. a downward line will be considered a match whether it is short or long and whether it is done in 300ms or 1000ms. To make the pattern detector sensitive to size, the "normalizeSize" option must be set to false. Similarly, to make the pattern detector speed sensitive you should set "normalizeSpeed" to false. By default these two options are set to true. 
 
 ## Patterns
 
@@ -28,10 +28,9 @@ This is the guide that defines the number corresponding to each address:
   8: 'E'    // 8 is equal to 0                                                              
 </pre>
 
+For the algorithm, each number in a pattern is equivalent to an address maintained for 100ms. For example "6666" will be a line drawn south for 400ms. So to match an "L" drawn in 1s (0.5s each line) the pattern should be "6666600000".  
 
-......................
-
-In cases of circular gestures like circles or squares, you have another options that allow you match a circle that begin on North and other that begin on South like the same pattern. This options is "detectCircular". If you set it true, then any circle will be the same pattern, if it is false, then the circle will must match form and initial point. "detecCircular" default settings is false. 
+In cases of circular gestures like circles or squares, you have another option that allow you match a circle that begin on North and other that begin on South with the same pattern. This options is "detectCircular". If you set it true, then any circle will be the same pattern, if it is false, then the circle will must match form and initial point. "detecCircular" default settings is false. 
 
 ## Usage:
 
@@ -49,8 +48,10 @@ ___gestures.uninstall(); // disable gestures
   patterns: [ 
     { 
       // Example:
-      name: "Line down", 
-      patterns: [ "6666" ], // can be more than one
+      name: "Line down (S) or line up (N)", 
+      patterns: [ "6666", "2222" ],   // can be more than one
+      normalizeSize: true,            // if false disable normalization of shape just for this pattern
+      normalizeTime: true,            // if false disable normalization of time just for this pattern
       action: function(ev) {
         // ev: "mouseup" event        
         // local vars inside 
@@ -66,8 +67,8 @@ ___gestures.uninstall(); // disable gestures
     { ... },
     { ... }
   ],
-  normalize: true, // if false disable normalization of gestures and difference between 
-                   // patterns of the same shape but different size.
+  normalizeSize: true, // if false disable normalization of shape
+  normalizeTime: true, // if false disable normalization of time
   detectCircular: false, // if true detect circular shapes no matter where the gesture begins
   debug: 0 // 0-4, 0 log just HITs, 4 just for developers and can hung up the browser
 }
