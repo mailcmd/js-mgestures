@@ -23,7 +23,12 @@ ___gestures.uninstall(); // disable gestures
   6: 'S',                               SW       6       SE                  
   7: 'SE',                                       S                           
   8: 'E'    // 8 is equal to 0                                                              
+
+  One direction every 100ms. Ex: 55555 is a diagonal SW traced in 0.5 seconds. 
+
 */
+
+
 
 /////////////////////////////
 // Gesture object definition
@@ -35,27 +40,34 @@ var Gestures = function (conf) {
     var installed = false;
     
     _this.conf = Object.assign({}, {
-        normalize: true,
+        normalizeSize: true,
+        normalizeTime: true,
         detectCircular: false,
+        patterns: null,
         debug: 0
     }, conf);
-
+    
     _this.onmousemove = function(e) {
-
         if (_this.mouseDown[2] != 1 || e.type == 'mouseup') {        
             if (gst) {
+                _this.ts_stop = (new Date()).getTime();
+                console.log('GESTURE: ', gst);
                 var found = false;
-                if (_this.conf.normalize && _this.conf.debug >= 2) console.log('Normalizing gesture ', gst);
-                if (_this.conf.normalize) gst = _this.normalize(gst);
-                if (_this.conf.normalize && _this.conf.debug >= 2) console.log('Normalized gesture: ', gst);
+                if (_this.conf.normalizeSize) gst = _this.normalizeSize(gst);
+                if (_this.conf.normalizeSize && _this.conf.debug >= 2) console.log('Gesture size normalized: ', gst);
+                if (_this.conf.normalizeTime && _this.conf.debug >= 2) console.log('Gesture time normalized!');
                 
-                for (i in gestures) {
-                    const g = gestures[i];
+                for (i in _this.conf.patterns) {
+                    const g = _this.conf.patterns[i];
                     for (j in g.patterns) {
-                        if (_this.conf.normalize && _this.conf.debug >= 2) console.log('Normalizing pattern ', g.patterns[j], ' (', g.name,')');
-                        const p = (_this.conf.normalize ? _this.normalize(g.patterns[j]) : g.patterns[j]);
-                        if (_this.conf.normalize && _this.conf.debug >= 2) console.log('Normalized pattern: ', p, ' (', g.name,')');
-                        const coef = _this.distance(p, gst);
+                        if (_this.conf.normalizeSize && _this.conf.debug >= 2) console.log('Normalizing pattern size: ', g.patterns[j], ' (', g.name,')');
+                        let p = (_this.conf.normalizeSize ? _this.normalizeSize(g.patterns[j]) : g.patterns[j]);
+                        if (_this.conf.normalizeSize && _this.conf.debug >= 2) console.log('Normalized pattern size: ', p, ' (', g.name,')');
+
+                        if (_this.conf.normalizeTime || g.normalizeTime) _this.normalizeTime(p.length);
+
+                        const coef = _this.distance(p, g.normalizeSize ? _this.normalizeSize(gst) : gst);
+                        
                         if (coef <= 0.3) {
                             found = true;
                             g.action(e);
@@ -105,6 +117,14 @@ var Gestures = function (conf) {
 
         if (_this.conf.debug >= 2) console.log('Comparing: ', a, b);
 
+        // length_coef keep relation between length of strings (always > 1)
+        var length_coef = a.length / b.length; 
+        length_coef = length_coef < 1 ? 1/length_coef : length_coef;
+
+        // time_coef keep relation between time of strings trace (always > 1)
+        // a velocity = 100ms/number (the bigger, the slower)
+        var time_coef = 100 / ((___gestures.ts_stop - ___gestures.ts_start) / b.length);
+        time_coef = time_coef < 1 ? 1/time_coef : time_coef;
         var matrix = [];
         
         // init matrix        
@@ -114,9 +134,9 @@ var Gestures = function (conf) {
 
         // fill matrix
         var dis = 0;
-        for (i = 0; i < b.length; i++) {
-            for (j = 0; j < a.length; j++) {
-                dis = Math.abs(parseInt(b.charAt(i)) - parseInt(a.charAt(j)));
+        for (var i = 0; i < b.length; i++) {
+            for (var j = 0; j < a.length; j++) {
+                dis = (length_coef - 1) + (time_coef - 1) + Math.abs(parseInt(b.charAt(i)) - parseInt(a.charAt(j)));
                 dis = dis == 8 ? 0 : (dis > 4 ? 8 - dis : dis);
                 matrix[i][j] = dis * dis * dis;
             }
@@ -128,9 +148,9 @@ var Gestures = function (conf) {
             for(j = 0; j < a.length; j++) f += j.toString().padStart(2) + ' ';
             console.log(f);
 
-            for(i = 0; i < b.length; i++) {
+            for(var i = 0; i < b.length; i++) {
                 var f = i.toString().padStart(2)+' ';
-                for(j = 0; j < a.length; j++){
+                for(var j = 0; j < a.length; j++){
                     f += matrix[i][j].toString().padStart(2) + ' ';
                 }
                 console.log(f);
@@ -138,13 +158,14 @@ var Gestures = function (conf) {
         }
         
         // do the math
-        var coef = a.length / b.length;
+        if (_this.conf.debug >= 3) console.log('Length length_coef: ', length_coef);
+        if (_this.conf.debug >= 3) console.log('Length time_coef: ', time_coef);
         var res = [], from = (_this.conf.detectCircular ? b.length-1 : 0);
 
         for (n = from; n >= 0; n--) {
             var f = '', tot = 0, c = 0;
             for (i = n; i < b.length + n; i++) {
-                const j = Math.round((i - n) * coef);
+                const j = Math.round((i - n) * length_coef);
                 const i2 = (i > b.length-1 ? i - b.length : i);
                 if (j >= a.length) break;
                 tot += matrix[i2][j];
@@ -158,7 +179,11 @@ var Gestures = function (conf) {
         return eval('Math.min(' + res.join(',') + ')');
     };
 
-    _this.normalize = function(s) {
+    _this.normalizeTime = function(l) {
+        _this.ts_start = 0;
+        _this.ts_stop = 100 * l;
+    };
+    _this.normalizeSize = function(s) {
         var ca = '', r = '', c = 0;
         for (i = 0; i < s.length; i++) {
             const cc = s.charAt(i);
@@ -249,7 +274,8 @@ var Gestures = function (conf) {
 
             // Events
             document.body.addEventListener('mousedown', _this.onmousedown = function (evt) {
-                _this.mouseDown[evt.button] = 1;                
+                _this.mouseDown[evt.button] = 1;  
+                _this.ts_start = (new Date()).getTime();
             }, true);            
             document.body.addEventListener('mouseup', _this.onmouseup = function (evt) {
                 _this.mouseDown[evt.button] = 0;                
@@ -293,3 +319,4 @@ var Gestures = function (conf) {
     return _this;
 
 }
+

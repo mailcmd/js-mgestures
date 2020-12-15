@@ -22,6 +22,10 @@
     <option value="3">Much more info yet!</option>
     <option value="4">Give me all, baby! (dangerous)</option>
   </select>
+  &nbsp;
+  <label for="normalize">Normalize</label>
+  <input name="normalize" type="checkbox" onchange="___gestures.conf.normalize=this.checked;" checked>
+  
   <div id="console">
     <div class="clear" onclick="this.parentNode.querySelectorAll('span').forEach(e => e.remove());">&#x267A;</div>
   </div>
@@ -41,14 +45,17 @@
       args.push('arguments['+i+']');
       pre.innerHTML += arguments[i] + ' ';
     }    
-    pre.innerHTML += '<br>-----<br>';
+    //pre.innerHTML += '<br>-----<br>';
+    pre.innerHTML += '<br>';
     document.getElementById('console').appendChild(pre);
     
     eval('_console_log('+args.join(',')+')');
     document.querySelector('#console').scrollTop = document.querySelector('#console').scrollHeight;
   }
   
-  var ___gestures = new Gestures();
+  var ___gestures = new Gestures({
+    patterns: patterns // see samples.js
+  });
   ___gestures.install();  // enable gestures
 
   </script>
