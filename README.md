@@ -3,7 +3,7 @@ Simple pure javascritp mouse gestures controller. I took some ideas from https:/
 
 ## How it works?
 
-The system works in a fairly simple way. Each gesture made is checked against a series of patterns; when there is a match (which does not have to be exact) the action associated with that pattern will be executed. To perform a gesture one of the mouse buttons should be held down for the duration (the default is the right mouse button). 
+The system works in a fairly simple way. Each gesture made is checked against a series of patterns; when there is a match (which does not have to be exact) the action associated with that pattern will be executed. To perform a gesture one of the mouse buttons should be held down for the duration of the gesture; the default button is the right, but you can change this setting "mouseButton" option (0: left, 1: middle, 2: right). 
 
 A mouse gesture has 3 essential properties: shape, size and duration. The shape is the basic gesture. A downward line or a circle are examples of shapes. At the same time each of these shapes can have a size (i.e. a downward line can be short or long) as well as be drawn in a certain period of time. 
 
@@ -48,6 +48,7 @@ ___gestures.uninstall(); // disable gestures
   normalizeSize: false,    // if false disable normalization of shape (default true)
   normalizeTime: false,    // if false disable normalization of time (default true)
   detectCircular: true,    // if true detect circular shapes no matter where the gesture begins  (default false)
+                           //    Be carefull, if true, slow down the matching process
   msByChar: 100,           // Change el time in ms associated to a character in pattern string (default 50) 
   debug: 1,                // 0-4, 0 log just HITs, 4 just for advanced developers and masochists (default 0)
   patterns: [ 
