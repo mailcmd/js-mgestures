@@ -25,8 +25,7 @@ var right = [ '0000', '00000000'];
 var left = [ '4444', '44444444']; 
 
 // Gestures configuration samples
-var patterns = [
-  /*
+var patterns = [  
     {
         name: 'up to down or down to up',
         patterns: up.concat(down), 
@@ -36,16 +35,15 @@ var patterns = [
             console.log('You made a gesture over these objects: ', els);
             console.log('You moved ', diff, 'px');
         }
-    },
-    */
+    },    
     {
         name: 'diagonal south west',
-        patterns: circle, //diag_downleft,
+        patterns: diag_downleft,
         detectCircular: true,
         action: function(e) {
             //console.log(e);
         }
-    },/*
+    },
     {
         name: 'down then right',
         patterns: down_right,
@@ -71,6 +69,6 @@ var patterns = [
         action: function(e) {
         }
     }   
-    */ 
+     
 ];
 
