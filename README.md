@@ -50,8 +50,9 @@ ___gestures.uninstall(); // disable gestures
       // Example:
       name: "Line down (S) or line up (N)", 
       patterns: [ "6666", "2222" ],   // can be more than one
-      normalizeSize: true,            // if false disable normalization of shape just for this pattern
+      normalizeSize: true,            // if false disable normalization of shape just for this pattern 
       normalizeTime: true,            // if false disable normalization of time just for this pattern
+      detectCircular: true,           // if false disable detectCircular just for this pattern
       action: function(ev) {
         // ev: "mouseup" event        
         // local vars inside 
@@ -63,6 +64,7 @@ ___gestures.uninstall(); // disable gestures
         
         var els = document.elementsFromPoint(e.pageX, e.pageY);
         console.log('You moved ', diff, 'px');      
+      }
     },
     { ... },
     { ... }
