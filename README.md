@@ -84,3 +84,7 @@ Just do this:
 # cd js-mgestures/demo
 # <your_favorite_browser> index.html
 ```
+
+## TO-DO
+
+More debbuging and a lot of optimizations... 
