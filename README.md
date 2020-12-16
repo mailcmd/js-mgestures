@@ -28,7 +28,7 @@ This is the guide that defines the number corresponding to each address:
   8: 'E'    // 8 is equal to 0                                                              
 </pre>
 
-For the algorithm, each number in a pattern is equivalent to an address maintained for 100ms. For example "6666" will be a line drawn south for 400ms. So to match an "L" drawn in 1s (0.5s each line) the pattern should be "6666600000".  
+Each number in a pattern is equivalent to an address maintained for 50ms (this value emerged after hundreds of tests and can be modified with the "msByChar" option). For example "6666" will be a line drawn south for 200ms. So to match an "L" drawn in 0.5s (0.25s each line) the pattern should be "6666600000".  
 
 In cases of circular gestures like circles or squares, you have another option that allow you match a circle that begin on North and other that begin on South with the same pattern. This options is "detectCircular". If you set it true, then any circle will be the same pattern, if it is false, then the circle will must match form and initial point. "detecCircular" default settings is false. 
 
@@ -45,10 +45,11 @@ ___gestures.uninstall(); // disable gestures
 
 ```javascript 
 {
-  normalizeSize: true,    // if false disable normalization of shape
-  normalizeTime: true,    // if false disable normalization of time
-  detectCircular: false,  // if true detect circular shapes no matter where the gesture begins
-  debug: 0,               // 0-4, 0 log just HITs, 4 just for advanced developers and masochists
+  normalizeSize: false,    // if false disable normalization of shape (default true)
+  normalizeTime: false,    // if false disable normalization of time (default true)
+  detectCircular: true,    // if true detect circular shapes no matter where the gesture begins  (default false)
+  msByChar: 100,           // Change el time in ms associated to a character in pattern string (default 50) 
+  debug: 1,                // 0-4, 0 log just HITs, 4 just for advanced developers and masochists (default 0)
   patterns: [ 
     { 
       // Example:
