@@ -15,16 +15,19 @@
 <body>
   
   Debug Level
-  <select onchange="___gestures.conf.debug=parseInt(this.value);">
+  <select onchange="___gestures.conf.debug=parseInt(this.value);" id="debug">
     <option value="0" selected>Only HITs</option>
     <option value="1">HITs and FAILS</option>
     <option value="2">Previous and more</option>
     <option value="3">Much more info yet!</option>
-    <option value="4">Give me all, baby! (dangerous)</option>
+    <option value="4">Give me all, baby!</option>
   </select>
   &nbsp;
-  <label for="normalize">Normalize</label>
-  <input name="normalize" type="checkbox" onchange="___gestures.conf.normalize=this.checked;" checked>
+  <label for="normalizeSize">Normalize Size</label>
+  <input id="normalizeSize" type="checkbox" onchange="___gestures.conf.normalizeSize=this.checked;" checked>
+  &nbsp;
+  <label for="normalizeTime">Normalize Time</label>
+  <input id="normalizeTime" type="checkbox" onchange="___gestures.conf.normalizeTime=this.checked;" checked>
   
   <div id="console">
     <div class="clear" onclick="this.parentNode.querySelectorAll('span').forEach(e => e.remove());">&#x267A;</div>
@@ -40,10 +43,10 @@
   console.log = function() {    
     var args = [];    
     var pre = document.createElement('span');
-    pre.innerHTML = '- ';
+    pre.innerHTML = '';
     for (i in arguments) {
       args.push('arguments['+i+']');
-      pre.innerHTML += arguments[i] + ' ';
+      pre.innerHTML += arguments[i].toString().replace(/ /g, '&nbsp;') + ' ';
     }    
     //pre.innerHTML += '<br>-----<br>';
     pre.innerHTML += '<br>';
@@ -51,12 +54,17 @@
     
     eval('_console_log('+args.join(',')+')');
     document.querySelector('#console').scrollTop = document.querySelector('#console').scrollHeight;
-  }
+  }  
   
   var ___gestures = new Gestures({
     patterns: patterns // see samples.js
   });
   ___gestures.install();  // enable gestures
+  
+  document.querySelectorAll('input,select').forEach(function(el){
+    var k = el.id;
+    (typeof(___gestures.conf[k]) == 'boolean' ? el.checked = ___gestures.conf[k] : el.value = ___gestures.conf[k]);
+  });
 
   </script>
   

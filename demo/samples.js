@@ -14,7 +14,7 @@
 
 
 // Gestures patterns samples
-var circle = [ '444556666667778001111122222333444' ];
+var circle = [ '444555666777000111222333444' ];
 var down = [ '6666' ];
 var up = [ '2222' ];
 var diag_downleft = [ '5555' ];
@@ -40,7 +40,8 @@ var patterns = [
     */
     {
         name: 'diagonal south west',
-        patterns: diag_downleft,
+        patterns: circle, //diag_downleft,
+        detectCircular: true,
         action: function(e) {
             //console.log(e);
         }
