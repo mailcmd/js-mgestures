@@ -48,7 +48,7 @@ ___gestures.uninstall(); // disable gestures
   normalizeSize: true,    // if false disable normalization of shape
   normalizeTime: true,    // if false disable normalization of time
   detectCircular: false,  // if true detect circular shapes no matter where the gesture begins
-  debug: 0,               // 0-4, 0 log just HITs, 4 just for developers and can hung up the browser
+  debug: 0,               // 0-4, 0 log just HITs, 4 just for advanced developers and masochists
   patterns: [ 
     { 
       // Example:
