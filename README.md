@@ -45,12 +45,13 @@ ___gestures.uninstall(); // disable gestures
 
 ```javascript 
 {
-  normalizeSize: false,    // if false disable normalization of shape (default true)
-  normalizeTime: false,    // if false disable normalization of time (default true)
-  detectCircular: true,    // if true detect circular shapes no matter where the gesture begins  (default false)
+  normalizeSize: true,     // if false, disable normalization of shape (default true)
+  normalizeTime: true,     // if false, disable normalization of time (default true)
+  detectCircular: false,   // if true detect circular shapes no matter where the gesture begins  (default false)
                            //    Be carefull, if true, slow down the matching process
-  msByChar: 100,           // Change el time in ms associated to a character in pattern string (default 50) 
-  debug: 1,                // 0-4, 0 log just HITs, 4 just for advanced developers and masochists (default 0)
+  msByChar: 50,            // Change el time in ms associated to a character in pattern string (default 50) 
+  debug: 0,                // 0-4, 0 log just HITs, 4 just for advanced developers and masochists (default 0)
+  mouseButton: 2,          // Change the mouse button to held down during the gesture (0: left, 1: middle, 2: right)
   patterns: [ 
     { 
       // Example:
