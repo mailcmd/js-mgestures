@@ -7,7 +7,7 @@ The system works in a fairly simple way. Each gesture made is checked against a 
 
 A mouse gesture has 3 essential properties: shape, size and duration. The shape is the basic gesture. A downward line or a circle are examples of shapes. At the same time each of these shapes can have a size (i.e. a downward line can be short or long) as well as be drawn in a certain period of time. 
 
-The pattern detector, by default, will ignore the size and the time of the shape, i.e. a downward line will be considered a match whether it is short or long and whether it is done in 300ms or 1000ms. To make the pattern detector sensitive to size, the "normalizeSize" option must be set to false. Similarly, to make the pattern detector speed sensitive you should set "normalizeSpeed" to false. By default these two options are set to true. 
+The pattern detector, by default, will ignore the size and the time of the shape, i.e. a downward line will be considered a match whether it is short or long and whether it is done in 300ms or 1000ms. To make the pattern detector sensitive to size, the "normalizeSize" option must be set to false. Similarly, to make the pattern detector speed sensitive you should set "normalizeTime" to false. By default these two options are set to true. 
 
 ## Patterns
 
