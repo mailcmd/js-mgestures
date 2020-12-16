@@ -49,11 +49,12 @@ var Gestures = function (conf) {
         detectCircular: false,
         patterns: null,
         msByChar: 50, // ms by char
+        mouseButton: 2,
         debug: 0
     }, conf);
     
     _this.onmousemove = function(e) {
-        if (_this.mouseDown[2] != 1 || e.type == 'mouseup') {        
+        if (_this.mouseDown[_this.conf.mouseButton] != 1 || e.type == 'mouseup') {        
             if (gst) {
                 _this.ts_stop = (new Date()).getTime();
                 console.log('GESTURE: ', gst);
@@ -61,19 +62,22 @@ var Gestures = function (conf) {
                 var found = false;
                 if (_this.conf.normalizeSize) gst = _this.normalizeSize(gst);
                 if (_this.conf.normalizeSize && _this.conf.debug >= 2) console.log('    Gesture size normalized: ', gst);
-                if (_this.conf.normalizeTime && _this.conf.debug >= 2) console.log('    Gesture time normalized!');
                 
                 for (i in _this.conf.patterns) {
                     const g = _this.conf.patterns[i];
-                    g.detectCircular = g.detectCircular ? g.detectCircular : false;
-                    var detectCircular = (_this.conf.detectCircular || g.detectCircular) && g.detectCircular;
+                    let detectCircular = g.detectCircular !== undefined ? g.detectCircular : _this.conf.detectCircular;
+                    let normalizeSize = g.normalizeSize !== undefined ? g.normalizeSize : _this.conf.normalizeSize;
+                    let normalizeTime = g.normalizeTime !== undefined ? g.normalizeTime : _this.conf.normalizeTime;
+
                     for (j in g.patterns) {
-                        let p = (_this.conf.normalizeSize ? _this.normalizeSize(g.patterns[j]) : g.patterns[j]);
-                        if (_this.conf.normalizeSize && _this.conf.debug >= 2) console.log('    Pattern size normalized: ', p, ' (', g.patterns[j],')');
+                        console.log('  * Matching: ', g.name, '(', g.patterns[j], ')');
+                        let p = (normalizeSize ? _this.normalizeSize(g.patterns[j]) : g.patterns[j]);
+                        if (normalizeSize && _this.conf.debug >= 2) console.log('    Pattern size normalized: ', p, ' (', g.patterns[j],')');
 
-                        if (_this.conf.normalizeTime || g.normalizeTime) _this.normalizeTime(p.length);
+                        if (normalizeTime && _this.conf.debug >= 2) console.log('    Gesture time normalized!');
+                        if (normalizeTime) _this.normalizeTime(p.length);
 
-                        const coef = _this.distance(p, g.normalizeSize ? _this.normalizeSize(gst) : gst, detectCircular);
+                        const coef = _this.distance(p, normalizeSize ? _this.normalizeSize(gst) : gst, detectCircular, normalizeTime);
 
                         if (coef <= _this.SENSIBILITY_COEF) {
                             found = true;
@@ -118,17 +122,17 @@ var Gestures = function (conf) {
         mx = e.pageX, my = e.pageY;
     };
 
-    _this.distance = function(a, b, detectCircular) {
+    _this.distance = function(a, b, detectCircular, normalizeTime) {
         if (a.length == 0) return b.length;
         if (b.length == 0) return a.length;
 
         if (_this.conf.debug >= 2) console.log('    Comparing: ', a, b);
 
         // if equals don't be stupid, just say ok
-        if (a == b) return 0;
+        if (normalizeTime && a == b) return 0;
 
-        // the longer, the more flexible (logarithmic coefic)
-        var sensibility_adjust = 0.5 * Math.sqrt(a.length + b.length / 2); // 0.03 * Math.log(a.length + b.length / 2);
+        // the longer, the more flexible (you could play with this if you want)
+        var sensibility_adjust = 0.002 * Math.pow((a.length + b.length) / 2, 2); 
 
         // length_coef keep relation between lengths of strings
         var length_coef = a.length / b.length; 
@@ -137,7 +141,6 @@ var Gestures = function (conf) {
         // time_coef keep relation between times of strings
         var time_coef = (a.length * _this.conf.msByChar) / (___gestures.ts_stop - ___gestures.ts_start);
         time_coef = (time_coef < 1 ? 1/time_coef : time_coef) - 1;
-
 
         var matrix = [];
         
@@ -174,9 +177,9 @@ var Gestures = function (conf) {
             }
         }
         
-        if (_this.conf.debug >= 3) console.log('    Length sensibility_adjust: ', sensibility_adjust);
-        if (_this.conf.debug >= 3) console.log('    Length length_coef: ', length_coef);
-        if (_this.conf.debug >= 3) console.log('    Length time_coef: ', time_coef);
+        if (_this.conf.debug >= 2) console.log('    ADJUST: sensibility_adjust: ', sensibility_adjust);
+        if (_this.conf.debug >= 2) console.log('    ADJUST: length_coef: ', length_coef);
+        if (_this.conf.debug >= 2) console.log('    ADJUST: time_coef: ', time_coef);
 
         // do the math
         var res = [], from = (detectCircular ? b.length-1 : 0);
@@ -291,7 +294,7 @@ var Gestures = function (conf) {
                 ctx.closePath();
             }
         }
-        if (_this.mouseDown[2] == 1) {
+        if (_this.mouseDown[_this.conf.mouseButton] == 1) {
             requestAnimationFrame(_this.mouse_trail);
         } else {
             _this.canvas.style.display = 'none';
