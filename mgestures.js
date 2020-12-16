@@ -48,7 +48,7 @@ var Gestures = function (conf) {
         normalizeTime: true,
         detectCircular: false,
         patterns: null,
-        msByChars: 50, // ms by char
+        msByChar: 50, // ms by char
         debug: 0
     }, conf);
     
@@ -135,7 +135,7 @@ var Gestures = function (conf) {
         length_coef = (length_coef < 1 ? 1/length_coef : length_coef) - 1;
 
         // time_coef keep relation between times of strings
-        var time_coef = (a.length * _this.conf.msByChars) / (___gestures.ts_stop - ___gestures.ts_start);
+        var time_coef = (a.length * _this.conf.msByChar) / (___gestures.ts_stop - ___gestures.ts_start);
         time_coef = (time_coef < 1 ? 1/time_coef : time_coef) - 1;
 
 
@@ -200,7 +200,7 @@ var Gestures = function (conf) {
 
     _this.normalizeTime = function(l) {
         _this.ts_start = 0;
-        _this.ts_stop = _this.conf.msByChars * l;
+        _this.ts_stop = _this.conf.msByChar * l;
     };
 
     _this.normalizeSize = function(s) {
