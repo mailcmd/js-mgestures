@@ -244,7 +244,8 @@ var Gestures = function (conf) {
         const duration = 30; 
     
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
+        ctx.beginPath();
+        
         for (let i = 0; i < _this.points.length; ++i) {
             const point = _this.points[i];
             let lastPoint;
@@ -275,16 +276,16 @@ var Gestures = function (conf) {
                 ctx.fillStyle = `rgb(${red},${green},${blue})`;
 
                 if (_this.conf.trailStyle == 'points') {
-                    ctx.beginPath();
+//                    ctx.beginPath();
                     ctx.arc(point.x, point.y, 10*(1-lifePercent), 0, 2 * Math.PI, true);
                     ctx.fill();
-                    ctx.closePath();
+//                    ctx.closePath();
                     console.log(5*(1-lifePercent))
                 } else {
                     var x1 = lastPoint.x, y1 = lastPoint.y, r1 = 1*(1 - lastPoint.lifetime / duration);
                     var x2 = point.x, y2 = point.y, r2 = 1*(1 - point.lifetime / duration);
 
-                    ctx.beginPath();
+//                    ctx.beginPath();
                     if (i == 0) ctx.arc(x1, y1, r1, 0, Math.PI * 2, true);
                     if (i == _this.points.length-1) ctx.arc(x2, y2, r2, 0, Math.PI * 2, true);
                     
@@ -325,10 +326,11 @@ var Gestures = function (conf) {
                         ctx.stroke();
                     }
                     ctx.fill();
-                    ctx.closePath();                    
+//                    ctx.closePath();
                 }             
             }
         }
+        ctx.closePath();
 
         if (_this.mouseDown[_this.conf.mouseButton] == 1) {
             requestAnimationFrame(_this.mouse_trail);
