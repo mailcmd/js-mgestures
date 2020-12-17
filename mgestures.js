@@ -75,7 +75,7 @@ var Gestures = function (conf) {
                     let normalizeTime = g.normalizeTime !== undefined ? g.normalizeTime : _this.conf.normalizeTime;
 
                     for (j in g.patterns) {
-                        console.log('  * Matching: ', g.name, '(', g.patterns[j], ')');
+                        if (_this.conf.debug >= 1) console.log('  * Matching: ', g.name, '(', g.patterns[j], ')');
                         let p = (normalizeSize ? _this.normalizeSize(g.patterns[j]) : g.patterns[j]);
                         if (normalizeSize && _this.conf.debug >= 2) console.log('    Pattern size normalized: ', p, ' (', g.patterns[j],')');
 
@@ -266,15 +266,14 @@ var Gestures = function (conf) {
                 // If the point dies, remove it.
                 _this.points.shift();
             } else {
-                // Otherwise animate it:
-        
-                // As the lifetime goes on, lifePercent goes from 0 to 1.
-                const lifePercent = (point.lifetime / duration);
-                const spreadRate = 7 * (1 - lifePercent);
+                // Otherwise animate it
         
                 ctx.lineJoin = 'round';
-                ctx.lineWidth = spreadRate;        
-                
+                ctx.lineWidth = 1; 
+
+                // As the lifetime goes on, lifePercent goes from 0 to 1.
+                const lifePercent = (point.lifetime / duration);        
+
                 const red = 0;
                 const green = Math.floor(190 - (190 * lifePercent));
                 const blue = Math.floor(210 + (210 * lifePercent));
@@ -285,8 +284,8 @@ var Gestures = function (conf) {
                     ctx.arc(point.x, point.y, 10*(1-lifePercent), 0, 2 * Math.PI, true);
                     ctx.fill();
                 } else {
-                    var x1 = lastPoint.x, y1 = lastPoint.y, r1 = 1*(1 - lastPoint.lifetime / duration);
-                    var x2 = point.x, y2 = point.y, r2 = 1*(1 - point.lifetime / duration);
+                    var x1 = lastPoint.x, y1 = lastPoint.y, r1 = 5*(1 - lastPoint.lifetime / duration);
+                    var x2 = point.x, y2 = point.y, r2 = 5*(1 - point.lifetime / duration);
 
                     if (i == 0) ctx.arc(x1, y1, r1, 0, Math.PI * 2, true);
                     if (i == _this.points.length-1) ctx.arc(x2, y2, r2, 0, Math.PI * 2, true);
@@ -295,24 +294,33 @@ var Gestures = function (conf) {
                         var ang = Math.PI/2 - Math.asin( (y2-y1) / Math.sqrt( Math.pow(y2-y1, 2) + Math.pow(x2-x1, 2) ) ) ;
                         
                         if (!isNaN(ang)) {
-                            var x1o = r1 * Math.sin(ang);
-                            var y1o = r1 * Math.sin(ang);
-                            var x2o = r2 * Math.sin(ang);
-                            var y2o = r2 * Math.sin(ang);
+                            if (x1 == x2) { 
+                                var x1o = r1, x2o = r2;
+                                var y1o = y2o = 0;
+                            } else if (y1 == y2) {
+                                var x1o = x2o = 0;
+                                var y1o = r1, y2o = r2;
+                            } else {
+                                var x1o = r1 * Math.cos(ang);
+                                var y1o = r1 * Math.sin(ang);
+                                var x2o = r2 * Math.cos(ang);
+                                var y2o = r2 * Math.sin(ang);
+                            }
+
                             if ((x2 > x1 && y2 > y1) || (x2 < x1 && y2 < y1)) {
                                 var x1_1 = x1 - x1o;
                                 var y1_1 = y1 + y1o; 
                                 var x1_2 = x1 + x1o;
                                 var y1_2 = y1 - y1o;
-                                var x2_1 = x2 - x1o;
-                                var y2_1 = y2 + y1o; 
-                                var x2_2 = x2 + x1o;
-                                var y2_2 = y2 - y1o;
+                                var x2_1 = x2 - x2o;
+                                var y2_1 = y2 + y2o; 
+                                var x2_2 = x2 + x2o;
+                                var y2_2 = y2 - y2o;
                             } else {
-                                var x1_1 = x1 + x2o;
-                                var y1_1 = y1 + y2o; 
-                                var x1_2 = x1 - x2o;
-                                var y1_2 = y1 - y2o;
+                                var x1_1 = x1 + x1o;
+                                var y1_1 = y1 + y1o; 
+                                var x1_2 = x1 - x1o;
+                                var y1_2 = y1 - y1o;
                                 var x2_1 = x2 + x2o;
                                 var y2_1 = y2 + y2o; 
                                 var x2_2 = x2 - x2o;
@@ -330,6 +338,7 @@ var Gestures = function (conf) {
                     ctx.fill();
                 }             
             }
+
         }
         ctx.closePath();
 
