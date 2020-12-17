@@ -56,6 +56,10 @@ var Gestures = function (conf) {
     
     _this.onmousemove = function(e) {
         if (_this.mouseDown[_this.conf.mouseButton] != 1 || e.type == 'mouseup') {        
+            
+            // If left button we must control text selection
+            if (_this.conf.mouseButton == 0) document.body.style.userSelect = '';            
+            
             if (gst) {
                 _this.ts_stop = (new Date()).getTime();
                 console.log('GESTURE: ', gst);
@@ -93,34 +97,36 @@ var Gestures = function (conf) {
             }
             mx = my = gst = undefined;
             return;
+
+        } else if (_this.mouseDown[_this.conf.mouseButton] == 1) {
+
+            if (!mx || !my) {
+                mx = e.pageX, my = e.pageY, gst = '';
+                ix = mx, iy = my;
+                _this.mouse_trail();
+                return;
+            }
+
+            // 1ms delay, don't aks why, just do it
+            setTimeout(function(){            
+                _this.add_point(mx - _this.canvas.offsetLeft, my - _this.canvas.offsetTop);                    
+            }, 1);
+            
+            var dx = (e.pageX - mx);
+            var dy = (my - e.pageY);
+            var dis = Math.sqrt(dx * dx + dy * dy);
+
+            if (dis < 10) return;
+
+            var angle = Math.atan2(dy, dx) * 180 / Math.PI;
+            angle = angle < 0 ? angle + 360 : angle;
+            angle2 = angle + 22.5;
+            var idx = parseInt(angle2 / 45);
+            idx = (idx == 8 ? 0 : idx);
+            gst += idx.toString();
+
+            mx = e.pageX, my = e.pageY;
         }
-
-        if (!mx || !my) {
-            mx = e.pageX, my = e.pageY, gst = '';
-            ix = mx, iy = my;
-            _this.mouse_trail();
-            return;
-        }
-
-        // 1ms delay, don't aks why, just do it
-        setTimeout(function(){            
-            _this.add_point(mx - _this.canvas.offsetLeft, my - _this.canvas.offsetTop);                    
-        }, 1);
-        
-        var dx = (e.pageX - mx);
-        var dy = (my - e.pageY);
-        var dis = Math.sqrt(dx * dx + dy * dy);
-
-        if (dis < 10) return;
-
-        var angle = Math.atan2(dy, dx) * 180 / Math.PI;
-        angle = angle < 0 ? angle + 360 : angle;
-        angle2 = angle + 22.5;
-        var idx = parseInt(angle2 / 45);
-        idx = (idx == 8 ? 0 : idx);
-        gst += idx.toString();
-
-        mx = e.pageX, my = e.pageY;
     };
 
     _this.distance = function(a, b, detectCircular, normalizeTime) {
@@ -245,7 +251,7 @@ var Gestures = function (conf) {
     
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.beginPath();
-        
+
         for (let i = 0; i < _this.points.length; ++i) {
             const point = _this.points[i];
             let lastPoint;
@@ -276,16 +282,12 @@ var Gestures = function (conf) {
                 ctx.fillStyle = `rgb(${red},${green},${blue})`;
 
                 if (_this.conf.trailStyle == 'points') {
-//                    ctx.beginPath();
                     ctx.arc(point.x, point.y, 10*(1-lifePercent), 0, 2 * Math.PI, true);
                     ctx.fill();
-//                    ctx.closePath();
-                    console.log(5*(1-lifePercent))
                 } else {
                     var x1 = lastPoint.x, y1 = lastPoint.y, r1 = 1*(1 - lastPoint.lifetime / duration);
                     var x2 = point.x, y2 = point.y, r2 = 1*(1 - point.lifetime / duration);
 
-//                    ctx.beginPath();
                     if (i == 0) ctx.arc(x1, y1, r1, 0, Math.PI * 2, true);
                     if (i == _this.points.length-1) ctx.arc(x2, y2, r2, 0, Math.PI * 2, true);
                     
@@ -326,7 +328,6 @@ var Gestures = function (conf) {
                         ctx.stroke();
                     }
                     ctx.fill();
-//                    ctx.closePath();
                 }             
             }
         }
@@ -351,6 +352,8 @@ var Gestures = function (conf) {
             document.body.addEventListener('mousedown', _this.onmousedown = function (evt) {
                 _this.mouseDown[evt.button] = 1;  
                 _this.ts_start = (new Date()).getTime();
+                // If left button we must control text selection
+                if (_this.conf.mouseButton == 0) document.body.style.userSelect = 'none';                
             }, true);            
             document.body.addEventListener('mouseup', _this.onmouseup = function (evt) {
                 _this.mouseDown[evt.button] = 0;                
