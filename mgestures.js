@@ -50,6 +50,7 @@ var Gestures = function (conf) {
         patterns: null,
         msByChar: 50, // ms by char
         mouseButton: 2,
+        trailStyle: 'line',
         debug: 0
     }, conf);
     
@@ -207,20 +208,6 @@ var Gestures = function (conf) {
     };
 
     _this.normalizeSize = function(s) {
-/*
-        var ca = '', r = '', c = 0;
-        for (i = 0; i < s.length; i++) {
-            const cc = s.charAt(i);
-            if (ca != cc) {
-                r += cc;
-                c = 0;
-            } else {
-                c++;
-                if (c < 4) r += cc;
-            }
-            ca = cc;
-        }
-*/
         var ca = '', r = '', c = 0;
         for (i = 0; i < s.length; i++) {
             const cc = s.charAt(i);
@@ -254,7 +241,7 @@ var Gestures = function (conf) {
     _this.mouse_trail = function() {
         _this.canvas.style.display = 'block';
         var ctx = _this.ctx;
-        const duration = 1.7 * (1 * 1000) / 60; 
+        const duration = 30; 
     
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
@@ -279,21 +266,70 @@ var Gestures = function (conf) {
                 const spreadRate = 7 * (1 - lifePercent);
         
                 ctx.lineJoin = 'round';
-                ctx.lineWidth = spreadRate;
-        
-                // As time increases, decrease r and b, increase g to go from purple to green.
+                ctx.lineWidth = spreadRate;        
+                
                 const red = 0;
                 const green = Math.floor(190 - (190 * lifePercent));
                 const blue = Math.floor(210 + (210 * lifePercent));
-                ctx.strokeStyle = `rgb(${red},${green},${blue}`;
-                ctx.fillStyle = `rgb(${red},${green},${blue}`;
-        
-                ctx.beginPath();
-                ctx.arc(point.x, point.y, 5*(1-lifePercent), 0, 2 * Math.PI, true);
-                ctx.fill();
-                ctx.closePath();
+                ctx.strokeStyle = `rgb(${red},${green},${blue})`;
+                ctx.fillStyle = `rgb(${red},${green},${blue})`;
+
+                if (_this.conf.trailStyle == 'points') {
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, 10*(1-lifePercent), 0, 2 * Math.PI, true);
+                    ctx.fill();
+                    ctx.closePath();
+                    console.log(5*(1-lifePercent))
+                } else {
+                    var x1 = lastPoint.x, y1 = lastPoint.y, r1 = 1*(1 - lastPoint.lifetime / duration);
+                    var x2 = point.x, y2 = point.y, r2 = 1*(1 - point.lifetime / duration);
+
+                    ctx.beginPath();
+                    if (i == 0) ctx.arc(x1, y1, r1, 0, Math.PI * 2, true);
+                    if (i == _this.points.length-1) ctx.arc(x2, y2, r2, 0, Math.PI * 2, true);
+                    
+                    if (i > 0) {
+                        var ang = Math.PI/2 - Math.asin( (y2-y1) / Math.sqrt( Math.pow(y2-y1, 2) + Math.pow(x2-x1, 2) ) ) ;
+                        
+                        if (!isNaN(ang)) {
+                            var x1o = r1 * Math.sin(ang);
+                            var y1o = r1 * Math.sin(ang);
+                            var x2o = r2 * Math.sin(ang);
+                            var y2o = r2 * Math.sin(ang);
+                            if ((x2 > x1 && y2 > y1) || (x2 < x1 && y2 < y1)) {
+                                var x1_1 = x1 - x1o;
+                                var y1_1 = y1 + y1o; 
+                                var x1_2 = x1 + x1o;
+                                var y1_2 = y1 - y1o;
+                                var x2_1 = x2 - x1o;
+                                var y2_1 = y2 + y1o; 
+                                var x2_2 = x2 + x1o;
+                                var y2_2 = y2 - y1o;
+                            } else {
+                                var x1_1 = x1 + x2o;
+                                var y1_1 = y1 + y2o; 
+                                var x1_2 = x1 - x2o;
+                                var y1_2 = y1 - y2o;
+                                var x2_1 = x2 + x2o;
+                                var y2_1 = y2 + y2o; 
+                                var x2_2 = x2 - x2o;
+                                var y2_2 = y2 - y2o;
+                            }                    
+
+                            ctx.moveTo(x1_1, y1_1);
+                            ctx.lineTo(x1_2, y1_2);
+                            ctx.lineTo(x2_2, y2_2);
+                            ctx.lineTo(x2_1, y2_1);
+                            ctx.lineTo(x1_1, y1_1);
+                        }
+                        ctx.stroke();
+                    }
+                    ctx.fill();
+                    ctx.closePath();                    
+                }             
             }
         }
+
         if (_this.mouseDown[_this.conf.mouseButton] == 1) {
             requestAnimationFrame(_this.mouse_trail);
         } else {
@@ -302,7 +338,7 @@ var Gestures = function (conf) {
         }
     };
 
-    
+   
     // Install and uninstall
     _this.install = function() {
         if (!installed) {            
