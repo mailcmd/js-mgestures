@@ -52,6 +52,7 @@ ___gestures.uninstall(); // disable gestures
   msByChar: 50,            // Change el time in ms associated to a character in pattern string (default 50) 
   debug: 0,                // 0-4, 0 log just HITs, 4 just for advanced developers and masochists (default 0)
   mouseButton: 2,          // Change the mouse button to held down during the gesture (0: left, 1: middle, 2: right)
+  trailStyle: 'line',      // Trail style can be 'line' or 'points' (default 'line')
   patterns: [ 
     { 
       // Example:
