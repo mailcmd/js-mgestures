@@ -26,7 +26,6 @@ ___gestures.uninstall(); // disable gestures
 */
 
 
-
 /////////////////////////////
 // Gesture object definition
 
