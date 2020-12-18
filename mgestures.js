@@ -2,6 +2,7 @@
 
 I took some ideas from https://github.com/adkelley/elm-mouse-gesture and levenshtein algorithm. I also took some ideas and small pieces of code from the internet to be able to draw the mouse tail. 
 
+
 Usage:
 
 var ___gestures = new Gestures({...});
@@ -24,6 +25,7 @@ ___gestures.uninstall(); // disable gestures
   8: 'E'    // 8 is equal to 0                                                              
 
 */
+
 
 
 /////////////////////////////
@@ -245,7 +247,7 @@ var Gestures = function (conf) {
     _this.mouse_trail = function() {
         _this.canvas.style.display = 'block';
         var ctx = _this.ctx;
-        const duration = 30; 
+        const duration = 18; 
     
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.beginPath();
