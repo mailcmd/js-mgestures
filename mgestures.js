@@ -2,7 +2,6 @@
 
 I took some ideas from https://github.com/adkelley/elm-mouse-gesture and levenshtein algorithm. I also took some ideas and small pieces of code from the internet to be able to draw the mouse tail. 
 
-
 Usage:
 
 var ___gestures = new Gestures({...});
