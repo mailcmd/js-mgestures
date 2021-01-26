@@ -45,7 +45,7 @@ ___gestures.uninstall(); // disable gestures
 
 ```javascript 
 {
-  normalizeSize: true,     // if false, disable normalization of shape (default true)
+  normalizeSize: true,     // if false, disable normalization of size (default true)
   normalizeTime: true,     // if false, disable normalization of time (default true)
   detectCircular: false,   // if true detect circular shapes no matter where the gesture begins  (default false)
                            //    Be carefull, if true, slow down the matching process
@@ -58,7 +58,7 @@ ___gestures.uninstall(); // disable gestures
       // Example:
       name: "Line down (S) or line up (N)", 
       patterns: [ "6666", "2222" ],   // can be more than one
-      normalizeSize: true,            // if false disable normalization of shape just for this pattern 
+      normalizeSize: true,            // if false disable normalization of size just for this pattern 
       normalizeTime: true,            // if false disable normalization of time just for this pattern
       detectCircular: true,           // if false disable detectCircular just for this pattern
       action: function(ev) {
