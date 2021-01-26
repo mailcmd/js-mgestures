@@ -68,10 +68,10 @@ ___gestures.uninstall(); // disable gestures
         //    mx, my: coordinates where the gesture end
 
         var diff = my - iy;
-        console.log('You made a gesture over these objects: ', els);
+        console.log('You moved ', diff, 'px');      
         
         var els = document.elementsFromPoint(e.pageX, e.pageY);
-        console.log('You moved ', diff, 'px');      
+        console.log('You made a gesture over these objects: ', els);
       }
     },
     { ... },
